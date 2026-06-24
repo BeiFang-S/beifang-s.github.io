@@ -3,296 +3,665 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeiFang - 项目展示</title>
+    <title>BeiFang · Research Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #1a1a2e;
-            --text-secondary: #6c757d;
-            --accent: #4361ee;
-            --accent-light: #eef1ff;
-            --border: #e9ecef;
-            --tag-bg: #e8eaf6;
-            --tag-text: #3949ab;
+            --bg-deep: #060a12;
+            --bg: #0c1220;
+            --bg-card: #111a2e;
+            --bg-card-hover: #162036;
+            --border: #1a2744;
+            --border-glow: #00d4aa33;
+            --accent: #00d4aa;
+            --accent-dim: #00d4aa22;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --text: #e2e8f0;
+            --text-muted: #64748b;
+            --text-dim: #475569;
+            --mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+            --sans: 'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: var(--bg);
+            font-family: var(--sans);
+            background: var(--bg-deep);
             color: var(--text);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
+        /* ===== Scan Line Animation ===== */
+        .scanline {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+            opacity: 0.4;
+            z-index: 1000;
+            animation: scanMove 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes scanMove {
+            0%, 100% { top: 0; opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            50% { top: 100vh; }
+        }
+
+        /* ===== Grid Background ===== */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== Hero ===== */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 80px 24px 60px;
-            text-align: center;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 24px;
+            z-index: 1;
         }
-        .hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 12px; }
-        .hero .subtitle { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto 24px; }
-        .hero .links a {
-            color: white; text-decoration: none; margin: 0 12px;
-            padding: 8px 20px; border: 1.5px solid rgba(255,255,255,0.5);
-            border-radius: 24px; font-size: 0.9rem; transition: all 0.2s;
-        }
-        .hero .links a:hover { background: rgba(255,255,255,0.2); border-color: white; }
 
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-label {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--accent);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.2s forwards;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            letter-spacing: -1px;
+            text-align: center;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.4s forwards;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 500px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.6s forwards;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.8s forwards;
+        }
+
+        .btn {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 12px 28px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-dim);
+            transform: translateY(-2px);
+        }
+        .btn.primary {
+            background: linear-gradient(135deg, var(--accent) 0%, #00b894 100%);
+            color: var(--bg-deep);
+            border-color: transparent;
+            font-weight: 600;
+        }
+        .btn.primary:hover {
+            box-shadow: 0 0 30px rgba(0, 212, 170, 0.3);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeUp 0.8s 1.2s forwards;
+        }
+        .scroll-hint::after {
+            content: '';
+            display: block;
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--text-dim), transparent);
+            margin: 12px auto 0;
+            animation: scrollPulse 2s infinite;
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Nav ===== */
         .nav {
-            position: sticky; top: 0; background: var(--card-bg);
-            border-bottom: 1px solid var(--border); z-index: 100;
-            display: flex; justify-content: center; gap: 8px; padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(6, 10, 18, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            padding: 10px 16px;
         }
         .nav a {
-            text-decoration: none; color: var(--text-secondary);
-            padding: 8px 20px; border-radius: 8px; font-size: 0.95rem;
-            font-weight: 500; transition: all 0.2s;
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
         }
-        .nav a:hover, .nav a.active { color: var(--accent); background: var(--accent-light); }
+        .nav a:hover { color: var(--accent); background: var(--accent-dim); }
 
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        /* ===== Sections ===== */
+        .section {
+            position: relative;
+            z-index: 1;
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .section-num {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
         .section-title {
-            font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;
-            display: flex; align-items: center; gap: 10px;
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
-        .section-title .icon { font-size: 1.3rem; }
-        .section-desc { color: var(--text-secondary); margin-bottom: 28px; font-size: 0.95rem; }
 
-        .card {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 12px; padding: 28px; margin-bottom: 20px;
-            transition: box-shadow 0.2s, transform 0.2s;
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 36px;
+            padding-left: 52px;
         }
-        .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
-        .card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
-        .card h3 a { color: var(--text); text-decoration: none; }
+
+        /* ===== Cards ===== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 28px 32px;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-glow);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateX(4px);
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .card h3 a { color: inherit; text-decoration: none; }
         .card h3 a:hover { color: var(--accent); }
-        .card .meta { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 10px; }
-        .card .desc { font-size: 0.95rem; color: #444; margin-bottom: 14px; }
+
+        .card-status {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 3px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+        .card-status.active {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+        }
+        .card-status.ongoing {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .card-meta {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
         .tags { display: flex; flex-wrap: wrap; gap: 6px; }
         .tag {
-            background: var(--tag-bg); color: var(--tag-text);
-            padding: 3px 12px; border-radius: 14px; font-size: 0.8rem; font-weight: 500;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 3px;
+            background: rgba(59, 130, 246, 0.08);
+            color: var(--accent-blue);
+            border: 1px solid rgba(59, 130, 246, 0.15);
         }
-        .tag.green { background: #e8f5e9; color: #2e7d32; }
-        .tag.orange { background: #fff3e0; color: #e65100; }
-        .tag.purple { background: #f3e5f5; color: #7b1fa2; }
+        .tag.green { background: rgba(0,212,170,0.08); color: var(--accent); border-color: rgba(0,212,170,0.15); }
+        .tag.purple { background: rgba(139,92,246,0.08); color: var(--accent-purple); border-color: rgba(139,92,246,0.15); }
 
-        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .about-item {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 12px; padding: 20px;
+        /* ===== About Grid ===== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
-        .about-item .label {
-            font-size: 0.8rem; color: var(--text-secondary);
-            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+        .info-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px 24px;
+            transition: border-color 0.3s;
         }
-        .about-item .value { font-weight: 600; font-size: 1rem; }
+        .info-item:hover { border-color: var(--border-glow); }
+        .info-label {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+        .info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
 
-        .timeline { position: relative; padding-left: 28px; }
+        /* ===== Timeline ===== */
+        .timeline { position: relative; padding-left: 32px; margin-top: 12px; }
         .timeline::before {
-            content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px;
-            width: 2px; background: var(--border);
+            content: '';
+            position: absolute;
+            left: 5px; top: 0; bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--accent), var(--border), transparent);
         }
-        .timeline-item { position: relative; margin-bottom: 28px; }
-        .timeline-item::before {
-            content: ''; position: absolute; left: -24px; top: 6px;
-            width: 12px; height: 12px; background: var(--accent);
-            border-radius: 50%; border: 2px solid var(--bg);
+        .tl-item { position: relative; margin-bottom: 32px; }
+        .tl-item::before {
+            content: '';
+            position: absolute;
+            left: -31px; top: 6px;
+            width: 9px; height: 9px;
+            background: var(--bg-deep);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
         }
-        .timeline-item .year { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+        .tl-year {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .tl-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+        .tl-desc { font-size: 0.85rem; color: var(--text-muted); }
 
+        /* ===== Footer ===== */
         .footer {
-            text-align: center; padding: 40px 20px;
-            color: var(--text-secondary); font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 48px 24px;
             border-top: 1px solid var(--border);
         }
+        .footer-line {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
 
-        @media (max-width: 600px) {
-            .hero { padding: 50px 16px 40px; }
-            .hero h1 { font-size: 1.8rem; }
-            .about-grid { grid-template-columns: 1fr; }
+        /* ===== Responsive ===== */
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 2rem; }
+            .info-grid { grid-template-columns: 1fr; }
             .card { padding: 20px; }
+            .section-desc { padding-left: 0; }
+            .nav { overflow-x: auto; justify-content: flex-start; }
+        }
+
+        /* ===== Reduced Motion ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+            .scanline { display: none; }
+        }
+
+        /* ===== Focus Visible ===== */
+        a:focus-visible, .btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body>
 
+<div class="grid-bg"></div>
+<div class="scanline"></div>
+
+<!-- Hero -->
 <div class="hero">
-    <h1>👋 BeiFang</h1>
-    <p class="subtitle">Mamba 医学图像分割研究者 · 专注于边界优化与状态空间模型</p>
-    <div class="links">
-        <a href="https://github.com/BeiFang-S" target="_blank">GitHub</a>
-        <a href="#projects">研究项目</a>
-        <a href="#about">关于我</a>
+    <div class="hero-label">research · portfolio</div>
+    <h1>Exploring <span class="highlight">Mamba</span><br>in Medical Imaging</h1>
+    <p class="hero-sub">医学图像分割 · 边界优化 · 状态空间模型</p>
+    <div class="hero-actions">
+        <a href="#projects" class="btn primary">查看项目 →</a>
+        <a href="https://github.com/BeiFang-S" target="_blank" class="btn">GitHub ↗</a>
     </div>
+    <div class="scroll-hint">SCROLL</div>
 </div>
 
+<!-- Nav -->
 <div class="nav">
-    <a href="#projects" class="active">🔬 研究项目</a>
-    <a href="#papers">📄 论文集</a>
-    <a href="#tools">🛠 工具</a>
-    <a href="#about">👤 关于</a>
+    <a href="#projects">PROJECTS</a>
+    <a href="#papers">PAPERS</a>
+    <a href="#tools">TOOLS</a>
+    <a href="#about">ABOUT</a>
 </div>
 
-<div class="container">
-
-<div id="projects">
-    <div class="section-title"><span class="icon">🔬</span> 研究项目</div>
-    <p class="section-desc">Mamba 在医学图像分割中的应用研究，聚焦边界优化方法</p>
+<!-- Projects -->
+<div class="section" id="projects">
+    <div class="section-header">
+        <span class="section-num">01</span>
+        <h2 class="section-title">研究项目</h2>
+    </div>
+    <p class="section-desc">Mamba 在医学图像分割中的应用，聚焦边界精度提升</p>
 
     <div class="card">
-        <h3><a href="#">Mamba-UNet 边界优化综述</a></h3>
-        <div class="meta">2024 - 进行中 · 目标期刊：MIA / TMI</div>
-        <div class="desc">
-            系统梳理了 Mamba 架构在医学图像分割中提升边界精度的 6 种方法路径：
-            损失函数优化、分支结构设计、注意力机制融合、
-            多尺度特征、引导扫描策略及后处理方法。
+        <div class="card-top">
+            <h3><a href="#">Mamba-UNet 边界优化综述</a></h3>
+            <span class="card-status active">ACTIVE</span>
+        </div>
+        <div class="card-meta">2024 — Present · Target: MIA / TMI</div>
+        <div class="card-desc">
+            系统梳理 Mamba 架构在医学图像分割中提升边界精度的多种方法路径，
+            涵盖损失函数、分支结构、注意力融合、多尺度特征、引导扫描与后处理。
         </div>
         <div class="tags">
             <span class="tag">Mamba</span>
             <span class="tag">UNet</span>
-            <span class="tag">医学图像分割</span>
-            <span class="tag green">边界优化</span>
+            <span class="tag green">Boundary</span>
             <span class="tag purple">SCI</span>
         </div>
     </div>
 
     <div class="card">
-        <h3><a href="#">论文集整理 (90+ 篇)</a></h3>
-        <div class="meta">Obsidian 知识库 · 持续更新</div>
-        <div class="desc">
-            基于 Obsidian 构建的 Mamba-UNet 论文知识库，涵盖 90+ 篇相关文献的精读笔记、
-            方法对比和创新点分析。用于快速定位研究空白和灵感来源。
+        <div class="card-top">
+            <h3><a href="#">论文知识库 (90+ Papers)</a></h3>
+            <span class="card-status ongoing">ONGOING</span>
+        </div>
+        <div class="card-meta">Obsidian · Continuous</div>
+        <div class="card-desc">
+            基于 Obsidian 构建的 Mamba-UNet 论文知识库，涵盖精读笔记、方法对比与创新点分析，
+            用于快速定位研究空白。
         </div>
         <div class="tags">
             <span class="tag">Obsidian</span>
-            <span class="tag">文献综述</span>
-            <span class="tag orange">知识管理</span>
+            <span class="tag green">Knowledge Base</span>
         </div>
     </div>
 </div>
 
-<div id="papers" style="margin-top: 48px;">
-    <div class="section-title"><span class="icon">📄</span> 论文集亮点</div>
-    <p class="section-desc">从 90+ 篇论文中精选的关键研究</p>
+<!-- Papers -->
+<div class="section" id="papers">
+    <div class="section-header">
+        <span class="section-num">02</span>
+        <h2 class="section-title">论文亮点</h2>
+    </div>
+    <p class="section-desc">从知识库中精选的探索方向</p>
 
     <div class="card">
-        <h3>BoundaryAwareMamba</h3>
-        <div class="meta">边界感知的 Mamba 扫描策略</div>
-        <div class="desc">
-            提出在 Mamba 的选择性扫描过程中引入边界先验信息，
-            使模型在序列化扫描时优先关注边缘区域，提升边界分割精度。
+        <div class="card-top">
+            <h3>BoundaryAwareMamba</h3>
+        </div>
+        <div class="card-desc">
+            在 Mamba 选择性扫描过程中引入边界先验信息，
+            使模型序列化扫描时优先关注边缘区域，提升边界分割精度。
         </div>
         <div class="tags">
-            <span class="tag">边界感知</span>
-            <span class="tag">选择性扫描</span>
+            <span class="tag">Boundary Prior</span>
+            <span class="tag">Selective Scan</span>
         </div>
     </div>
 
     <div class="card">
-        <h3>BoundaryGuidedScan</h3>
-        <div class="meta">边界引导的扫描路径优化</div>
-        <div class="desc">
-            设计基于边缘检测的自适应扫描路径，使 Mamba 在处理医学图像时
-            沿器官边界进行蛇形扫描，减少远距离像素的无关依赖。
+        <div class="card-top">
+            <h3>BoundaryGuidedScan</h3>
+        </div>
+        <div class="card-desc">
+            基于边缘检测的自适应扫描路径，沿器官边界进行蛇形扫描，
+            减少远距离像素的无关依赖。
         </div>
         <div class="tags">
-            <span class="tag">扫描路径</span>
-            <span class="tag">蛇形扫描</span>
+            <span class="tag">Scan Path</span>
+            <span class="tag green">Snake Scan</span>
         </div>
     </div>
 </div>
 
-<div id="tools" style="margin-top: 48px;">
-    <div class="section-title"><span class="icon">🛠</span> 工具 & 脚本</div>
-    <p class="section-desc">研究中常用的小工具</p>
+<!-- Tools -->
+<div class="section" id="tools">
+    <div class="section-header">
+        <span class="section-num">03</span>
+        <h2 class="section-title">工具</h2>
+    </div>
+    <p class="section-desc">研究与效率工具</p>
 
     <div class="card">
-        <h3>数据报告生成器</h3>
-        <div class="meta">Python · Excel + Word 自动化</div>
-        <div class="desc">
-            自动读取 Excel 数据，生成标准化的 Word 报告。
-            支持公式计算、字体排版，一键输出可提交文件。
+        <div class="card-top">
+            <h3>数据报告生成器</h3>
+        </div>
+        <div class="card-meta">Python · Excel + Word</div>
+        <div class="card-desc">
+            自动读取 Excel 数据，生成标准化 Word 报告。
+            支持公式计算与排版，一键输出。
         </div>
         <div class="tags">
             <span class="tag">Python</span>
-            <span class="tag">自动化</span>
-            <span class="tag green">办公提效</span>
+            <span class="tag green">Automation</span>
         </div>
     </div>
 
     <div class="card">
-        <h3>站点地图可视化</h3>
-        <div class="meta">Python · 地图 API</div>
-        <div class="desc">
+        <div class="card-top">
+            <h3>站点地图可视化</h3>
+        </div>
+        <div class="card-meta">Python · Map API</div>
+        <div class="card-desc">
             从 Excel 提取站点数据，调用地图 API 地理编码，
-            生成覆盖圈和热力图的 HTML 可视化页面。
+            生成覆盖圈和热力图的 HTML 可视化。
         </div>
         <div class="tags">
-            <span class="tag">地图 API</span>
-            <span class="tag">数据可视化</span>
-            <span class="tag orange">GIS</span>
+            <span class="tag">Map API</span>
+            <span class="tag purple">GIS</span>
         </div>
     </div>
 </div>
 
-<div id="about" style="margin-top: 48px;">
-    <div class="section-title"><span class="icon">👤</span> 关于我</div>
-    <p class="section-desc">研究方向</p>
+<!-- About -->
+<div class="section" id="about">
+    <div class="section-header">
+        <span class="section-num">04</span>
+        <h2 class="section-title">关于</h2>
+    </div>
+    <p class="section-desc">研究方向与技术背景</p>
 
-    <div class="about-grid">
-        <div class="about-item">
-            <div class="label">研究方向</div>
-            <div class="value">Mamba 医学图像分割</div>
+    <div class="info-grid">
+        <div class="info-item">
+            <div class="info-label">Research</div>
+            <div class="info-value">Mamba 医学图像分割</div>
         </div>
-        <div class="about-item">
-            <div class="label">目标期刊</div>
-            <div class="value">MIA / TMI / Neurocomputing</div>
+        <div class="info-item">
+            <div class="info-label">Target</div>
+            <div class="info-value">MIA / TMI / Neurocomputing</div>
         </div>
-        <div class="about-item">
-            <div class="label">技术栈</div>
-            <div class="value">Python · PyTorch · CUDA</div>
+        <div class="info-item">
+            <div class="info-label">Stack</div>
+            <div class="info-value">Python · PyTorch · CUDA</div>
         </div>
-        <div class="about-item">
-            <div class="label">兴趣</div>
-            <div class="value">AI + 行业应用</div>
+        <div class="info-item">
+            <div class="info-label">Focus</div>
+            <div class="info-value">Boundary Optimization</div>
         </div>
     </div>
 
-    <div style="margin-top: 28px;">
-        <div class="section-title" style="font-size: 1.2rem;"><span class="icon">📚</span> 学习历程</div>
-        <div class="timeline" style="margin-top: 20px;">
-            <div class="timeline-item">
-                <div class="year">2024</div>
-                <div><strong>开始 Mamba 医学图像分割研究</strong></div>
-                <div class="desc">系统阅读 90+ 篇论文，建立知识库，聚焦边界优化方向</div>
+    <div style="margin-top: 48px;">
+        <div class="section-header">
+            <span class="section-num">/</span>
+            <h2 class="section-title" style="font-size: 1.2rem;">Timeline</h2>
+        </div>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="tl-year">2024</div>
+                <div class="tl-title">Mamba 医学图像分割研究</div>
+                <div class="tl-desc">系统阅读 90+ 篇论文，建立知识库，聚焦边界优化</div>
             </div>
-            <div class="timeline-item">
-                <div class="year">持续</div>
-                <div><strong>开源 & 技术分享</strong></div>
-                <div class="desc">通过 GitHub 分享研究代码和工具脚本</div>
+            <div class="tl-item">
+                <div class="tl-year">NOW</div>
+                <div class="tl-title">开源 & 技术分享</div>
+                <div class="tl-desc">通过 GitHub 分享研究代码与工具</div>
             </div>
         </div>
     </div>
 </div>
 
-</div>
-
+<!-- Footer -->
 <div class="footer">
-    © 2024 BeiFang · Built with GitHub Pages
+    <div class="footer-line">BeiFang · 2024 · Built with GitHub Pages</div>
 </div>
 
 <script>
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-        e.preventDefault();
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+// Intersection Observer for scroll animations
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
     });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.card, .info-item, .tl-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.5s, transform 0.5s';
+    observer.observe(el);
 });
 </script>
 
