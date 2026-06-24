@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeiFang - 项目展示</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #1a1a2e;
+            --text-secondary: #6c757d;
+            --accent: #4361ee;
+            --accent-light: #eef1ff;
+            --border: #e9ecef;
+            --tag-bg: #e8eaf6;
+            --tag-text: #3949ab;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* ===== Header ===== */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 24px 60px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 12px; }
+        .hero .subtitle { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto 24px; }
+        .hero .links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 12px;
+            padding: 8px 20px;
+            border: 1.5px solid rgba(255,255,255,0.5);
+            border-radius: 24px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .hero .links a:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: white;
+        }
+
+        /* ===== Navigation ===== */
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav a:hover, .nav a.active {
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        /* ===== Sections ===== */
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title .icon { font-size: 1.3rem; }
+        .section-desc { color: var(--text-secondary); margin-bottom: 28px; font-size: 0.95rem; }
+
+        /* ===== Cards ===== */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            transform: translateY(-2px);
+        }
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .card h3 a {
+            color: var(--text);
+            text-decoration: none;
+        }
+        .card h3 a:hover { color: var(--accent); }
+        .card .meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        .card .desc {
+            font-size: 0.95rem;
+            color: #444;
+            margin-bottom: 14px;
+        }
+        .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .tag {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            padding: 3px 12px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .tag.green { background: #e8f5e9; color: #2e7d32; }
+        .tag.orange { background: #fff3e0; color: #e65100; }
+        .tag.purple { background: #f3e5f5; color: #7b1fa2; }
+
+        /* ===== About ===== */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .about-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .about-item .label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .about-item .value { font-weight: 600; font-size: 1rem; }
+
+        /* ===== Timeline ===== */
+        .timeline { position: relative; padding-left: 28px; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: var(--border);
+        }
+        .timeline-item { position: relative; margin-bottom: 28px; }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--bg);
+        }
+        .timeline-item .year {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 600px) {
+            .hero { padding: 50px 16px 40px; }
+            .hero h1 { font-size: 1.8rem; }
+            .about-grid { grid-template-columns: 1fr; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+    <h1>👋 BeiFang</h1>
+    <p class="subtitle">Mamba 医学图像分割研究者 · 专注于边界优化与状态空间模型</p>
+    <div class="links">
+        <a href="https://github.com/BeiFang-S" target="_blank">GitHub</a>
+        <a href="#projects">研究项目</a>
+        <a href="#about">关于我</a>
+    </div>
+</div>
+
+<!-- Nav -->
+<div class="nav">
+    <a href="#projects" class="active">🔬 研究项目</a>
+    <a href="#papers">📄 论文集</a>
+    <a href="#tools">🛠 工具</a>
+    <a href="#about">👤 关于</a>
+</div>
+
+<div class="container">
+
+<!-- Research Projects -->
+<div id="projects">
+    <div class="section-title"><span class="icon">🔬</span> 研究项目</div>
+    <p class="section-desc">Mamba 在医学图像分割中的应用研究，聚焦边界优化方法</p>
+
+    <div class="card">
+        <h3><a href="#">Mamba-UNet 边界优化综述</a></h3>
+        <div class="meta">2024 - 进行中 · 目标期刊：MIA / TMI</div>
+        <div class="desc">
+            系统梳理了 Mamba 架构在医学图像分割中提升边界精度的 6 种方法路径：
+            损失函数优化（~60%）、分支结构设计（~25%）、注意力机制融合（~10%）、
+            多尺度特征（~8%）、引导扫描策略（~3%）及后处理方法（~12%）。
+        </div>
+        <div class="tags">
+            <span class="tag">Mamba</span>
+            <span class="tag">UNet</span>
+            <span class="tag">医学图像分割</span>
+            <span class="tag green">边界优化</span>
+            <span class="tag purple">SCI</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3><a href="#">论文集整理 (90+ 篇)</a></h3>
+        <div class="meta">Obsidian 知识库 · 持续更新</div>
+        <div class="desc">
+            基于 Obsidian 构建的 Mamba-UNet 论文知识库，涵盖 90+ 篇相关文献的精读笔记、
+            方法对比和创新点分析。用于快速定位研究空白和灵感来源。
+        </div>
+        <div class="tags">
+            <span class="tag">Obsidian</span>
+            <span class="tag">文献综述</span>
+            <span class="tag orange">知识管理</span>
+        </div>
+    </div>
+</div>
+
+<!-- Papers Section -->
+<div id="papers" style="margin-top: 48px;">
+    <div class="section-title"><span class="icon">📄</span> 论文集亮点</div>
+    <p class="section-desc">从 90+ 篇论文中精选的关键研究</p>
+
+    <div class="card">
+        <h3>BoundaryAwareMamba</h3>
+        <div class="meta">边界感知的 Mamba 扫描策略</div>
+        <div class="desc">
+            提出在 Mamba 的选择性扫描过程中引入边界先验信息，
+            使模型在序列化扫描时优先关注边缘区域，提升边界分割精度。
+        </div>
+        <div class="tags">
+            <span class="tag">边界感知</span>
+            <span class="tag">选择性扫描</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>BoundaryGuidedScan</h3>
+        <div class="meta">边界引导的扫描路径优化</div>
+        <div class="desc">
+            设计基于边缘检测的自适应扫描路径，使 Mamba 在处理医学图像时
+            沿器官边界进行蛇形扫描，减少远距离像素的无关依赖。
+        </div>
+        <div class="tags">
+            <span class="tag">扫描路径</span>
+            <span class="tag">蛇形扫描</span>
+        </div>
+    </div>
+</div>
+
+<!-- Tools -->
+<div id="tools" style="margin-top: 48px;">
+    <div class="section-title"><span class="icon">🛠</span> 工具 & 脚本</div>
+    <p class="section-desc">研究和工作中常用的小工具</p>
+
+    <div class="card">
+        <h3>驾培投诉报告生成器</h3>
+        <div class="meta">Python · Excel + Word 自动化</div>
+        <div class="desc">
+            自动读取投诉数据 Excel，生成标准化的 Word 公文报告。
+            支持 SUMIFS 公式、仿宋字体排版，一键输出可提交文件。
+        </div>
+        <div class="tags">
+            <span class="tag">Python</span>
+            <span class="tag">自动化</span>
+            <span class="tag green">办公提效</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>公交线路站点地图</h3>
+        <div class="meta">Python · 百度地图 API</div>
+        <div class="desc">
+            从 Excel 台账提取公交站点，调用百度地图 API 地理编码，
+            生成覆盖圈和热力图的 HTML 可视化页面。
+        </div>
+        <div class="tags">
+            <span class="tag">百度地图</span>
+            <span class="tag">数据可视化</span>
+            <span class="tag orange">GIS</span>
+        </div>
+    </div>
+</div>
+
+<!-- About -->
+<div id="about" style="margin-top: 48px;">
+    <div class="section-title"><span class="icon">👤</span> 关于我</div>
+    <p class="section-desc">研究 & 工作</p>
+
+    <div class="about-grid">
+        <div class="about-item">
+            <div class="label">研究方向</div>
+            <div class="value">Mamba 医学图像分割</div>
+        </div>
+        <div class="about-item">
+            <div class="label">目标期刊</div>
+            <div class="value">MIA / TMI / Neurocomputing</div>
+        </div>
+        <div class="about-item">
+            <div class="label">工作</div>
+            <div class="value">芜湖市交通运输局</div>
+        </div>
+        <div class="about-item">
+            <div class="label">技术栈</div>
+            <div class="value">Python · PyTorch · CUDA</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 28px;">
+        <div class="section-title" style="font-size: 1.2rem;"><span class="icon">📚</span> 学习历程</div>
+        <div class="timeline" style="margin-top: 20px;">
+            <div class="timeline-item">
+                <div class="year">2024</div>
+                <div><strong>开始 Mamba 医学图像分割研究</strong></div>
+                <div class="desc">系统阅读 90+ 篇论文，建立 Obsidian 知识库，聚焦边界优化方向</div>
+            </div>
+            <div class="timeline-item">
+                <div class="year">2024</div>
+                <div><strong>政务数字化实践</strong></div>
+                <div class="desc">开发驾培投诉报告生成器、公交线路可视化等工具，提升办公效率</div>
+            </div>
+            <div class="timeline-item">
+                <div class="year">持续</div>
+                <div><strong>开源 & 技术分享</strong></div>
+                <div class="desc">通过 GitHub 分享研究代码和工具脚本</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div class="footer">
+    © 2024 BeiFang · Built with ❤️ and GitHub Pages
+</div>
+
+<!-- Smooth scroll -->
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+</script>
+
+</body>
+</html>
